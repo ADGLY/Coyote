@@ -85,6 +85,8 @@ int main(int argc, char *argv[]) {
 
 #ifdef TRANSFER
       cproc->invoke(invokeTransfer);
+      while (!cproc->checkCompleted(CoyoteOper::TRANSFER))
+        ;
 #else
 #ifdef ASYNC
       cproc->invoke(asyncRead);
@@ -97,6 +99,7 @@ int main(int argc, char *argv[]) {
     }
 
     const auto end = std::chrono::high_resolution_clock::now();
+    cproc->clearCompleted();
     const auto diffNs =
         std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin)
             .count();
