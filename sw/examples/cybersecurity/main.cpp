@@ -1,10 +1,11 @@
 #include <iostream>
 #include <string>
 
+#include "cDefs.hpp"
 #include "cProcess.hpp"
 
-#define ASYNC
-// #define TRANSFER
+// #define ASYNC_MODE
+#define TRANSFER_MODE
 
 using namespace std;
 using namespace fpga;
@@ -83,12 +84,12 @@ int main(int argc, char *argv[]) {
     const auto begin = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < NB_EXPERIMENTS; ++i) {
 
-#ifdef TRANSFER
+#ifdef TRANSFER_MODE
       cproc->invoke(invokeTransfer);
-      while (!cproc->checkCompleted(CoyoteOper::TRANSFER))
+      while (cproc->checkCompleted(CoyoteOper::TRANSFER) != i + 1)
         ;
 #else
-#ifdef ASYNC
+#ifdef ASYNC_MODE
       cproc->invoke(asyncRead);
       cproc->invoke(invokeWrite);
 #else
